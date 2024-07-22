@@ -1,0 +1,1 @@
+![HASIL](contoh.png)
