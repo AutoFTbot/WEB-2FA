@@ -1,1 +1,1 @@
-![HASIL](contoh.png)
+![HASIL](gambar.png)
