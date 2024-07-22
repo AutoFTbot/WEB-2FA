@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="105064e8f4ad5f665426ef68a68e8471015abdea" content="105064e8f4ad5f665426ef68a68e8471015abdea" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Layanan autentikasi 2FA yang menyediakan autentikasi dua faktor yang aman dan mudah digunakan.">
+    <meta name="keywords" content="2FA, Autentikasi Dua Faktor, Keamanan, Authenticator">
+    <title>2FA Auth</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="icon" href="/images/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css"/>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="logo-container">
+            <img src="/images/agin.png" alt="Logo" class="logo">
+        </div>
+        <div class="menu-toggle" onclick="toggleMenu()">
+            &#9776;
+        </div>
+        <nav class="nav-links" id="navLinks">
+            <ul>
+                <li>
+                    <div class="bot-container">
+                        <a href="https://t.me/Secret2faBot" target="_blank" class="bot-link telegram">
+                            <i class="fab fa-telegram icon"></i> Bot Telegram
+                        </a>
+                        <a href="https://wa.me/6282126818120" target="_blank" class="bot-link whatsapp">
+                            <i class="fab fa-whatsapp icon"></i> Bot WhatsApp
+                        </a>
+                        <a href="https://t.me/yha_bot" target="_blank" class="bot-link panel">
+                            <i class="fas fa-shopping-cart icon"></i> Beli Panel
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="form-container">
+                <form id="2fa-form">
+                    <label for="secret">Masukkan 2FA Secret Anda:</label>
+                    <input type="text" id="secret" name="secret" required>
+                    <button type="submit">Generate Kode 2FA</button>
+                </form>
+                <div id="result" class="result" style="display: none;">
+                    <div class="token-info">
+                        <h2>Kode 2FA Anda:</h2>
+                        <p id="token"></p>
+                        <button id="copy" onclick="copyToken()">Salin Kode</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ads-container">
+            <div class="ads-slider">
+                <div><img src="/images/1.png" alt="Ad 1"></div>
+                <div><img src="/images/2.png" alt="Ad 2"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function copyToken() {
+            const token = document.getElementById('token').textContent.trim();
+            const textarea = document.createElement('textarea');
+            textarea.value = token;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        }
+
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('show');
+            const menuToggle = document.querySelector('.menu-toggle');
+            menuToggle.innerHTML = navLinks.classList.contains('show') ? '&#10006;' : '&#9776;';
+        }
+
+        $(document).ready(function(){
+            $('.ads-slider').slick({
+                dots: true,
+                infinite: true,
+                speed: 500,
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                autoplay: true,
+                autoplaySpeed: 2000,
+                arrows: true,
+            });
+        });
+
+        document.getElementById('2fa-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const secret = document.getElementById('secret').value;
+
+            fetch('/api/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({ secret: secret })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('token').textContent = data.token;
+                document.getElementById('result').style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
